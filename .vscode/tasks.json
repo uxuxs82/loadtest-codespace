@@ -1,0 +1,31 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "start ui",
+      "type": "shell",
+      "command": "bash .devcontainer/start.sh",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "cli 500 min",
+      "type": "shell",
+      "command": "bash scripts/full-power.sh ${input:target}",
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "target",
+      "type": "promptString",
+      "description": "target url",
+      "default": "https://example.com/"
+    }
+  ]
+}

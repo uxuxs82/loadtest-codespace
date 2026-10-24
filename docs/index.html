@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>load test studio</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main>
+    <header class="hero">
+      <div class="eyebrow">k6 + github codespaces</div>
+      <h1>load test studio</h1>
+      <p class="lead">нагрузочный тест в браузере. 500 vu, 1000 минут, два куска по 500. без установки, без карты и без постоянного хостинга.</p>
+      <div class="actions">
+        <a class="button primary" href="https://codespaces.new/uxuxs82/loadtest-codespace?quickstart=1" target="_blank" rel="noreferrer">open in codespaces</a>
+        <a class="button ghost" href="https://github.com/uxuxs82/loadtest-codespace" target="_blank" rel="noreferrer">github</a>
+      </div>
+      <div class="preset">
+        <span>full power preset</span>
+        <code>target https://example.com/</code>
+        <code>vus 500</code>
+        <code>total 1000 min</code>
+        <code>chunks 2 x 500 min</code>
+        <code>ramp 5 s</code>
+        <code>think 0 s</code>
+      </div>
+    </header>
+
+    <section class="grid">
+      <article>
+        <h2>что внутри</h2>
+        <ul>
+          <li>веб-панель с target, vus, duration, ramp-up и think time</li>
+          <li>кнопка full power на 500 vu и 1000 минут</li>
+          <li>кампания переживает перезапуск того же codespace</li>
+          <li>summary.json и лог каждого куска</li>
+          <li>защита от private и loopback target</li>
+        </ul>
+      </article>
+      <article>
+        <h2>лимиты</h2>
+        <ul>
+          <li>codespace живет максимум 12 часов</li>
+          <li>idle timeout максимум 240 минут</li>
+          <li>500 минут на кусок, два куска на 1000 минут</li>
+          <li>бесплатно 120 core-hours в месяц</li>
+          <li>полный прогон на 4 ядрах: около 67 core-hours</li>
+          <li>нужен публичный http или https target</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="steps">
+      <h2>как запустить</h2>
+      <ol>
+        <li>открой codespaces по кнопке выше.</li>
+        <li>дождись установки k6 и flask. это минута или две.</li>
+        <li>открой порт 8000, если вкладка не открылась сама.</li>
+        <li>впиши свой сайт и подтверди, что он твой.</li>
+        <li>нажми full power.</li>
+        <li>после первого куска останови и снова запусти тот же codespace, затем нажми continue campaign.</li>
+      </ol>
+      <p class="note">для продолжения нужен тот же codespace. открыть список: <a href="https://github.com/codespaces">github codespaces</a>. новый codespace начинает кампанию с нуля.</p>
+    </section>
+
+    <section class="steps">
+      <h2>почему два куска</h2>
+      <p>codespace живет максимум 12 часов, это 720 минут. 1000 минут это 16 часов 40 минут. поэтому full power режет тест на два куска по 500 минут. один кусок идет 8 часов 20 минут и влезает в лимит.</p>
+      <p>после первого куска кампания встает на паузу. перезапусти codespace, открой панель и нажми continue campaign. прогресс лежит в results/ и сохраняется при перезапуске.</p>
+    </section>
+
+    <footer>
+      <span>только свои сайты. не давай нагрузку на чужое.</span>
+      <span>mit</span>
+    </footer>
+  </main>
+</body>
+</html>

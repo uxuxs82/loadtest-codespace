@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>load test studio</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">k6 + github codespaces</div>
+        <h1>load test studio</h1>
+      </div>
+      <div class="status idle" id="status-badge">idle</div>
+    </header>
+
+    <section class="layout">
+      <form class="panel form" id="config-form">
+        <div class="panel-head">
+          <h2>настройки</h2>
+          <span class="hint">только свои сайты</span>
+        </div>
+
+        <label class="field wide">
+          <span>target url</span>
+          <input id="target" name="target" type="url" placeholder="https://example.com/" autocomplete="url" required>
+        </label>
+
+        <div class="row">
+          <label class="field">
+            <span>vus</span>
+            <input id="vus" name="vus" type="number" min="1" max="1000" value="500" required>
+          </label>
+          <label class="field">
+            <span>duration, min</span>
+            <input id="duration" name="duration_minutes" type="number" min="1" max="10000" value="10" required>
+          </label>
+        </div>
+
+        <div class="row">
+          <label class="field">
+            <span>ramp-up, sec</span>
+            <input id="ramp" name="ramp_up_seconds" type="number" min="0" max="600" value="5" required>
+          </label>
+          <label class="field">
+            <span>think time, sec</span>
+            <input id="think" name="think_time_seconds" type="number" min="0" max="60" step="0.1" value="1" required>
+          </label>
+        </div>
+
+        <label class="field wide">
+          <span>user agent</span>
+          <input id="user-agent" name="user_agent" type="text" value="loadtest-codespace/1.0" maxlength="300">
+        </label>
+
+        <label class="field wide">
+          <span>chunk, min для full power</span>
+          <input id="chunk" name="chunk_minutes" type="number" min="1" max="600" value="500" required>
+        </label>
+
+        <label class="check">
+          <input id="own" type="checkbox">
+          <span>я владею этим сайтом и имею право давать нагрузку</span>
+        </label>
+
+        <div class="actions">
+          <button type="submit" class="primary" id="start-button">start once</button>
+          <button type="button" class="danger" id="full-button">full power</button>
+          <button type="button" class="ghost" id="stop-button" disabled>stop</button>
+        </div>
+
+        <p class="note" id="message"></p>
+
+        <div class="meta">
+          <span id="estimate">0 vu-hours</span>
+          <span id="codespace-estimate">~0 core-hours</span>
+        </div>
+      </form>
+
+      <section class="panel run">
+        <div class="panel-head">
+          <h2>run</h2>
+          <span class="hint" id="run-id">no run</span>
+        </div>
+        <div class="stats">
+          <div><span>status</span><strong id="run-status">idle</strong></div>
+          <div><span>target</span><strong id="run-target">-</strong></div>
+          <div><span>vus</span><strong id="run-vus">-</strong></div>
+          <div><span>duration</span><strong id="run-duration">-</strong></div>
+          <div><span>elapsed</span><strong id="run-elapsed">00:00:00</strong></div>
+          <div><span>exit</span><strong id="run-exit">-</strong></div>
+        </div>
+        <div class="campaign" id="campaign-box" hidden>
+          <div class="campaign-head">
+            <span>campaign</span>
+            <strong id="campaign-progress">0 / 0 min</strong>
+          </div>
+          <div class="bar"><span id="campaign-bar"></span></div>
+          <div class="campaign-meta">
+            <span id="campaign-status">paused</span>
+            <span id="campaign-chunk">chunk 0 / 0</span>
+            <span id="campaign-session">session 00:00:00</span>
+          </div>
+          <div class="chunks" id="chunks"></div>
+          <button type="button" class="ghost small" id="reset-button">reset campaign</button>
+        </div>
+        <div class="downloads">
+          <a id="summary-link" href="#" hidden>summary.json</a>
+          <a id="log-link" href="#" hidden>run.log</a>
+        </div>
+      </section>
+    </section>
+
+    <section class="panel log-panel">
+      <div class="panel-head">
+        <h2>log</h2>
+        <span class="hint">last 200 lines</span>
+      </div>
+      <pre id="log">waiting for a run</pre>
+    </section>
+
+    <footer>
+      <span>codespaces max lifetime: 12h. full power splits 1000 min into 2 chunks of 500 min.</span>
+      <span>keep this tab open. set idle timeout to 240 min.</span>
+    </footer>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>

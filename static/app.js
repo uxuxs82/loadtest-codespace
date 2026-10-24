@@ -125,7 +125,8 @@ function renderCampaign(campaign) {
     const index = document.createElement('strong');
     index.textContent = String(item.index).padStart(2, '0');
     const label = document.createElement('span');
-    label.textContent = `${item.minutes} min · ${item.status}`;
+    const code = item.exit_code && item.exit_code !== 0 ? ` (exit ${item.exit_code})` : '';
+    label.textContent = `${item.minutes} min - ${item.status}${code}`;
     const link = document.createElement('a');
     if (item.summary_url) {
       link.href = item.summary_url;

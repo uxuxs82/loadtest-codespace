@@ -25,7 +25,8 @@
 
         <label class="field wide">
           <span>target url</span>
-          <input id="target" name="target" type="url" placeholder="https://example.com/" autocomplete="url" required>
+          <input id="target" name="target" type="url" placeholder="https://example.com/" autocomplete="url" list="targets" required>
+          <datalist id="targets"></datalist>
         </label>
 
         <div class="row">
@@ -58,11 +59,6 @@
         <label class="field wide">
           <span>chunk, min для full power</span>
           <input id="chunk" name="chunk_minutes" type="number" min="1" max="600" value="500" required>
-        </label>
-
-        <label class="check">
-          <input id="own" type="checkbox">
-          <span>я владею этим сайтом и имею право давать нагрузку</span>
         </label>
 
         <div class="actions">

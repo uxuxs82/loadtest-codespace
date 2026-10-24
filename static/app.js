@@ -8,7 +8,7 @@ const ramp = $('ramp');
 const think = $('think');
 const userAgent = $('user-agent');
 const chunk = $('chunk');
-const own = $('own');
+const targetsList = $('targets');
 const startButton = $('start-button');
 const fullButton = $('full-button');
 const stopButton = $('stop-button');
@@ -36,6 +36,7 @@ const estimate = $('estimate');
 const codespaceEstimate = $('codespace-estimate');
 
 const STORAGE_KEY = 'loadtest-codespace-config';
+const TARGETS_KEY = 'loadtest-codespace-targets';
 let lastStatus = null;
 
 function readForm() {
@@ -53,12 +54,49 @@ function readForm() {
 
 function saveForm() {
   const data = readForm();
-  data.own = own.checked;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch (error) {
     return;
   }
+}
+
+function loadTargets() {
+  try {
+    const raw = localStorage.getItem(TARGETS_KEY);
+    if (!raw) return [];
+    const data = JSON.parse(raw);
+    return Array.isArray(data) ? data.filter((item) => typeof item === 'string') : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveTargets(items) {
+  try {
+    localStorage.setItem(TARGETS_KEY, JSON.stringify(items.slice(0, 50)));
+  } catch (error) {
+    return;
+  }
+}
+
+function renderTargets() {
+  const items = loadTargets();
+  targetsList.innerHTML = '';
+  for (const item of items) {
+    const option = document.createElement('option');
+    option.value = item;
+    targetsList.append(option);
+  }
+}
+
+function rememberTarget(value) {
+  const targetValue = value.trim();
+  if (!targetValue) return;
+  const items = loadTargets().filter((item) => item !== targetValue);
+  items.unshift(targetValue);
+  saveTargets(items);
+  renderTargets();
 }
 
 function loadForm() {
@@ -73,7 +111,6 @@ function loadForm() {
     if (data.think_time_seconds !== undefined) think.value = data.think_time_seconds;
     if (data.user_agent) userAgent.value = data.user_agent;
     if (data.chunk_minutes) chunk.value = data.chunk_minutes;
-    if (data.own) own.checked = true;
   } catch (error) {
     localStorage.removeItem(STORAGE_KEY);
   }
@@ -227,10 +264,6 @@ function ensureReady() {
     target.focus();
     throw new Error('укажи target url');
   }
-  if (!own.checked) {
-    own.focus();
-    throw new Error('подтверди, что сайт твой');
-  }
 }
 
 async function startSingle(event) {
@@ -244,6 +277,7 @@ async function startSingle(event) {
     saveForm();
     setMessage('запускаю', 'ok');
     const result = await request('/start', data);
+    rememberTarget(data.target);
     render(result);
   } catch (error) {
     setMessage(error.message, 'error');
@@ -278,6 +312,7 @@ async function fullPower() {
     const data = readForm();
     setMessage('запускаю full power: 500 vu, 1000 min, 2 chunks', 'ok');
     const result = await request('/start-campaign', data);
+    rememberTarget(data.target);
     render(result);
   } catch (error) {
     setMessage(error.message, 'error');
@@ -325,6 +360,7 @@ resetButton.addEventListener('click', resetCampaign);
 for (const input of [vus, duration, ramp, think, chunk]) {
   input.addEventListener('input', updateEstimate);
 }
+renderTargets();
 loadForm();
 updateEstimate();
 poll();

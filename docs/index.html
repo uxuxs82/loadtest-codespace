@@ -32,6 +32,7 @@
         <h2>что внутри</h2>
         <ul>
           <li>веб-панель с target, vus, duration, ramp-up и think time</li>
+          <li>запоминает последние target, подтверждение каждый раз не нужно</li>
           <li>кнопка full power на 500 vu и 1000 минут</li>
           <li>кампания переживает перезапуск того же codespace</li>
           <li>summary.json и лог каждого куска</li>
@@ -57,7 +58,7 @@
         <li>открой codespaces по кнопке выше.</li>
         <li>дождись установки k6 и flask. это минута или две.</li>
         <li>открой порт 8000, если вкладка не открылась сама.</li>
-        <li>впиши свой сайт и подтверди, что он твой.</li>
+        <li>впиши свой сайт, он запомнится в браузере.</li>
         <li>нажми full power.</li>
         <li>после первого куска останови и снова запусти тот же codespace, затем нажми continue campaign.</li>
       </ol>
@@ -68,6 +69,34 @@
       <h2>почему два куска</h2>
       <p>codespace живет максимум 12 часов, это 720 минут. 1000 минут это 16 часов 40 минут. поэтому full power режет тест на два куска по 500 минут. один кусок идет 8 часов 20 минут и влезает в лимит.</p>
       <p>после первого куска кампания встает на паузу. перезапусти codespace, открой панель и нажми continue campaign. прогресс лежит в results/ и сохраняется при перезапуске.</p>
+    </section>
+
+    <section class="steps">
+      <h2>постоянная панель</h2>
+      <p>не создавай новый codespace на каждый тест. сделай один и сохрани ссылку на порт 8000 в закладки.</p>
+      <ol>
+        <li>создай codespace один раз.</li>
+        <li>открой порт 8000.</li>
+        <li>скопируй адрес вида <code>https://имя-8000.app.github.dev</code> и сохрани в закладки.</li>
+        <li>дальше открывай эту закладку. если codespace остановлен, github предложит его запустить.</li>
+        <li>не удаляй codespace, тогда ссылка, настройки и кампания остаются.</li>
+      </ol>
+      <p class="note">это личная панель в codespaces, а не отдельный хостинг. она живет, пока ты не удалишь codespace.</p>
+    </section>
+
+    <section class="steps">
+      <h2>cli из termux</h2>
+      <p>команда сама поднимет codespace, запустит тест и скачает summary.</p>
+      <pre><code>git clone https://github.com/uxuxs82/loadtest-codespace
+cd loadtest-codespace
+bash cli/install.sh
+
+k6 https://мой-сайт.ru/ 10 1m
+k6 https://мой-сайт.ru/ --full --keep
+k6 status
+k6 continue
+k6 summary --all</code></pre>
+      <p>нужен <code>gh</code>, авторизованный в github. по умолчанию после теста codespace останавливается, флаг <code>--keep</code> оставляет его для панели.</p>
     </section>
 
     <footer>

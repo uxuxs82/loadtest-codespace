@@ -170,24 +170,6 @@ input:focus {
   margin-top: 12px;
 }
 
-.check {
-  align-items: flex-start;
-  color: var(--muted);
-  display: flex;
-  font-size: 13px;
-  gap: 10px;
-  line-height: 1.4;
-  margin-top: 16px;
-}
-
-.check input {
-  accent-color: var(--accent);
-  flex: 0 0 auto;
-  height: 16px;
-  margin-top: 2px;
-  width: 16px;
-}
-
 .actions {
   display: flex;
   flex-wrap: wrap;

@@ -170,6 +170,22 @@ li + li {
   padding-left: 12px;
 }
 
+pre {
+  background: #080a0d;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--accent);
+  font-size: 12px;
+  line-height: 1.7;
+  margin: 14px 0 0;
+  overflow-x: auto;
+  padding: 14px;
+}
+
+pre code {
+  color: inherit;
+}
+
 footer {
   border-top: 1px solid var(--line);
   color: var(--muted);

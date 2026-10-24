@@ -7,6 +7,7 @@
 ## что умеет
 
 - target, vus, duration, ramp-up, think time и user agent
+- запоминает последние target в браузере, подтверждение каждый раз не нужно
 - кнопка full power: 500 vu, 1000 min, два куска по 500 min
 - кампания помнит прогресс после перезапуска того же codespace
 - summary.json и лог каждого куска
@@ -18,11 +19,25 @@
 1. нажми [создать codespace](https://codespaces.new/uxuxs82/loadtest-codespace?quickstart=1).
 2. дождись установки k6 и flask. это занимает минуту или две.
 3. codespaces откроет порт 8000. если вкладка не открылась, открой вкладку ports и нажми открыть 8000.
-4. впиши свой target, подтверди, что сайт твой, и нажми full power.
+4. впиши свой target и нажми full power. панель запомнит его в браузере.
 5. первый кусок идет 500 минут. после него кампания встает на паузу.
 6. останови и снова запусти тот же codespace из [github codespaces](https://github.com/codespaces). открой порт 8000 и нажми continue campaign.
 
 важно: для продолжения нужен тот же codespace. новый codespace начинает с нуля, потому что `results/` не хранится в git.
+
+подтверждение владения убрано: панель доверяет тебе, но нагрузку давай только на свои сайты.
+
+## постоянная панель
+
+не создавай новый codespace на каждый тест. сделай один и сохрани ссылку на порт 8000 в закладки.
+
+1. создай codespace один раз.
+2. открой порт 8000.
+3. скопируй адрес вида `https://<имя>-8000.app.github.dev` и сохрани в закладки.
+4. дальше открывай эту закладку. если codespace остановлен, github предложит его запустить.
+5. не удаляй codespace, тогда ссылка, настройки и кампания остаются.
+
+это не отдельный хостинг, а твоя личная панель в codespaces. она живет, пока ты не удалишь codespace.
 
 ## настройки codespaces
 
@@ -74,19 +89,56 @@ python3 app.py
 
 открой `http://127.0.0.1:8000`.
 
-## cli
+## cli из termux
 
-если панель не нужна, можно запустить один кусок из терминала:
-
-```bash
-bash scripts/full-power.sh https://example.com/
-```
-
-переменные:
+если панель не нужна, поставь команду `k6`. она сама поднимет codespace, запустит тест и скачает summary.
 
 ```bash
-VUS=500 DURATION=500m RAMP_UP=5s THINK_TIME=0 bash scripts/full-power.sh https://example.com/
+git clone https://github.com/uxuxs82/loadtest-codespace
+cd loadtest-codespace
+bash cli/install.sh
 ```
+
+установщик кладет файл в `$PREFIX/bin/k6` в termux или в `~/.local/bin/k6` в обычном linux. нужен `gh`, авторизованный в github.
+
+быстрый запуск:
+
+```bash
+k6 https://мой-сайт.ru/ 10 1m
+k6 https://мой-сайт.ru/ 100 30m --think 1
+k6 https://мой-сайт.ru/ --full --keep
+```
+
+`k6 <url> <vus> <time>` запускает один тест. если время больше 600 минут, тест автоматически станет кампанией с кусками по 500 минут. `--full` это пресет 500 vu и 1000 минут.
+
+по умолчанию после завершения теста codespace останавливается, чтобы не тратить квоту. флаг `--keep` оставляет его запущенным для панели.
+
+команды:
+
+```bash
+k6 status
+k6 up
+k6 continue
+k6 stop
+k6 logs
+k6 summary
+k6 summary --all
+k6 reset
+k6 down
+k6 destroy
+```
+
+- `status`: состояние теста и кампании
+- `up`: запустить codespace и панель, напечатать ссылку
+- `continue`: запустить следующий кусок кампании
+- `stop`: остановить текущий тест, codespace оставить
+- `logs`: последние 200 строк лога, `--full` весь лог, `--save` сохранить
+- `summary`: скачать summary текущего запуска, `--all` все куски кампании
+- `reset`: сбросить кампанию
+- `down`: остановить codespace
+- `destroy`: удалить codespace вместе с результатами
+
+файлы summary лежат в `~/.local/share/loadtest-codespace/`.
 
 ## тесты
 
@@ -100,6 +152,7 @@ python3 -m unittest discover -s tests -t . -v
 - `loadtest.js`: сценарий k6
 - `static/`: веб-панель
 - `.devcontainer/`: установка k6 и автозапуск панели
+- `cli/k6.py`: команда `k6` для termux
 - `scripts/full-power.sh`: запуск одного куска из терминала
 - `tests/`: тесты api
 

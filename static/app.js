@@ -251,7 +251,6 @@ async function startSingle(event) {
 
 async function fullPower() {
   try {
-    ensureReady();
     if (lastStatus && lastStatus.campaign && lastStatus.campaign.status === 'paused') {
       const session = lastStatus.session_elapsed_seconds || 0;
       const nextChunk = lastStatus.campaign.chunks.find((item) => item.status === 'pending' || item.status === 'interrupted');
@@ -267,6 +266,7 @@ async function fullPower() {
     if (lastStatus && lastStatus.campaign) {
       throw new Error('сначала reset campaign');
     }
+    ensureReady();
     vus.value = 500;
     duration.value = 1000;
     ramp.value = 5;
